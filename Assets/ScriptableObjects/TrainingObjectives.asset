@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6374755655eb9414d8d29a52f6869b89, type: 3}
   m_Name: TrainingObjectives
   m_EditorClassIdentifier: Assembly-CSharp::InspectionSystem.Objectives.ObjectiveData
-  ObjectiveIds:
-  - Helmet
-  - toolbox
-  - glasses
+  RequiredObjectIds:
   - fire_ext
   - gloves
+  - Helmet
+  - glasses
+  - toolbox

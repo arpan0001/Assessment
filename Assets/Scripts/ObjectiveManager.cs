@@ -1,18 +1,30 @@
+using System.Collections.Generic;
 using UnityEngine;
+
 using InspectionSystem.Core;
 
 namespace InspectionSystem.Objectives
 {
+    /// <summary>
+    /// Tracks inspection progress.
+    /// Objects may be inspected in any order.
+    /// </summary>
     public class ObjectiveManager : MonoBehaviour
     {
         [Header("Objective Data")]
         [SerializeField]
         private ObjectiveData objectiveData;
 
-        private int currentObjectiveIndex;
+        // Stores completed inspections
+        private readonly HashSet<string>
+            completedObjects =
+                new HashSet<string>();
 
-        public int CurrentObjectiveIndex =>
-            currentObjectiveIndex;
+        public int CompletedCount =>
+            completedObjects.Count;
+
+        public int TotalCount =>
+            objectiveData.RequiredObjectIds.Count;
 
         private void OnEnable()
         {
@@ -28,62 +40,81 @@ namespace InspectionSystem.Objectives
 
         private void Start()
         {
-            DisplayCurrentObjective();
+            UpdateProgress();
         }
 
         private void OnObjectInspected(
             string objectId)
         {
-            // Safety Check
-            if (currentObjectiveIndex >=
-                objectiveData.ObjectiveIds.Count)
+            // Ignore invalid IDs
+            if (!objectiveData.RequiredObjectIds
+                .Contains(objectId))
+            {
                 return;
+            }
 
-            string requiredObjectId =
-                objectiveData.ObjectiveIds[
-                    currentObjectiveIndex];
-
-            // Wrong object selected
-            if (objectId != requiredObjectId)
+            // Ignore already completed objects
+            if (completedObjects.Contains(
+                objectId))
             {
                 Debug.Log(
-                    $"Wrong Object! Expected: {requiredObjectId}");
+                    $"{objectId} already inspected.");
 
                 return;
             }
+
+            completedObjects.Add(
+                objectId);
 
             Debug.Log(
-                $"Correct Object: {objectId}");
+                $"{objectId} inspection completed.");
 
-            currentObjectiveIndex++;
+            UpdateProgress();
 
-            GameEvents.ObjectiveProgressUpdated?.Invoke(
-            currentObjectiveIndex,
-             objectiveData.ObjectiveIds.Count);
-
-            // All objectives completed
-            if (currentObjectiveIndex >=
-                objectiveData.ObjectiveIds.Count)
-            {
-                Debug.Log(
-                    "Training Completed!");
-
-                GameEvents.TrainingCompleted?.Invoke();
-
-                return;
-            }
-
-            DisplayCurrentObjective();
+            CheckTrainingCompletion();
         }
 
-        private void DisplayCurrentObjective()
+        private void UpdateProgress()
         {
-            string currentObjective =
-                objectiveData.ObjectiveIds[
-                    currentObjectiveIndex];
+            int completed =
+                completedObjects.Count;
+
+            int total =
+                objectiveData.RequiredObjectIds.Count;
+
+            GameEvents.ObjectiveProgressUpdated
+                ?.Invoke(
+                    completed,
+                    total);
+        }
+
+        private void CheckTrainingCompletion()
+        {
+            if (completedObjects.Count !=
+                objectiveData.RequiredObjectIds.Count)
+            {
+                return;
+            }
 
             Debug.Log(
-                $"Current Objective: {currentObjective}");
+                "Training Completed");
+
+            GameEvents.TrainingCompleted
+                ?.Invoke();
+        }
+
+        public bool IsObjectCompleted(
+            string objectId)
+        {
+            return completedObjects.Contains(
+                objectId);
+        }
+
+        public void ResetObjectives()
+        {
+            completedObjects.Clear();
+
+            UpdateProgress();
         }
     }
 }
