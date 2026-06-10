@@ -1,5 +1,6 @@
 using UnityEngine;
 using InspectionSystem.Data;
+using InspectionSystem.Core;
 
 namespace InspectionSystem.Interaction
 {
@@ -16,7 +17,7 @@ namespace InspectionSystem.Interaction
         /// </summary>
         public void Select()
         {
-            Debug.Log($"Selected: {objectData.DisplayName}");
+            GameEvents.ObjectSelected?.Invoke(objectData);
         }
     }
 }

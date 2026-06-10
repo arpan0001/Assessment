@@ -283,6 +283,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 87742236}
+  - component: {fileID: 87742237}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -305,6 +306,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1438750893}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &87742237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87742235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfaa213880894ac4eaa36780c13cf0aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InspectionSystem.UI.UIManager
+  objectNameText: {fileID: 227818624}
+  descriptionText: {fileID: 1809725587}
+  completionPanel: {fileID: 15472545}
 --- !u!4 &204531636 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1728359837733430035, guid: 6ec27b272d043044db5db2541e1d68a1, type: 3}
@@ -585,7 +601,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.13052616, y: 0, z: 0, w: 0.9914449}
-  m_LocalPosition: {x: 0, y: 3, z: -8}
+  m_LocalPosition: {x: -9.95, y: 3, z: -8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1029,7 +1045,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 604010115}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 87742237}
+        m_TargetAssemblyTypeName: InspectionSystem.UI.UIManager, Assembly-CSharp
+        m_MethodName: OnInspectButtonPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &604010115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2344,7 +2372,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Training Completed!
 
-    
+
 
     Congratulations!'
   m_isRightToLeft: 0
@@ -2489,6 +2517,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2100717324}
+  - component: {fileID: 2100717325}
   m_Layer: 0
   m_Name: ObjectiveManager
   m_TagString: Untagged
@@ -2511,6 +2540,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1438750893}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2100717325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2100717323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c8471102fa637942a9020d40906cf7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InspectionSystem.Objectives.ObjectiveManager
+  objectiveData: {fileID: 11400000, guid: 1066e76f9756a2744934bcffb7dc0dbe, type: 2}
 --- !u!1001 &865483657466606162
 PrefabInstance:
   m_ObjectHideFlags: 0
