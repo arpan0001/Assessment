@@ -320,6 +320,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InspectionSystem.UI.UIManager
   objectNameText: {fileID: 227818624}
   descriptionText: {fileID: 1809725587}
+  objectiveText: {fileID: 529870048}
+  progressText: {fileID: 1804617752}
   completionPanel: {fileID: 15472545}
 --- !u!4 &204531636 stripped
 Transform:

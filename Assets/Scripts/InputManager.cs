@@ -1,44 +1,48 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 namespace InspectionSystem.Interaction
 {
     public class InputManager : MonoBehaviour
     {
+        [Header("Camera")]
         [SerializeField]
         private Camera mainCamera;
 
         private void Update()
         {
-#if UNITY_EDITOR || UNITY_STANDALONE
             HandleMouseInput();
-#else
             HandleTouchInput();
-#endif
         }
 
         private void HandleMouseInput()
         {
-            if (!Input.GetMouseButtonDown(0))
+            if (Mouse.current == null)
+                return;
+
+            if (!Mouse.current.leftButton
+                .wasPressedThisFrame)
                 return;
 
             ProcessSelection(
-                Input.mousePosition);
+                Mouse.current.position.ReadValue());
         }
 
         private void HandleTouchInput()
         {
-            if (Input.touchCount == 0)
+            if (Touchscreen.current == null)
                 return;
 
-            Touch touch =
-                Input.GetTouch(0);
+            var touch =
+                Touchscreen.current.primaryTouch;
 
-            if (touch.phase != TouchPhase.Began)
+            if (!touch.press
+                .wasPressedThisFrame)
                 return;
 
             ProcessSelection(
-                touch.position);
+                touch.position.ReadValue());
         }
 
         private void ProcessSelection(
@@ -59,7 +63,8 @@ namespace InspectionSystem.Interaction
             }
 
             InteractableObject interactable =
-                hit.collider.GetComponent<InteractableObject>();
+                hit.collider.GetComponent<
+                    InteractableObject>();
 
             if (interactable == null)
                 return;
@@ -69,23 +74,11 @@ namespace InspectionSystem.Interaction
 
         private bool IsPointerOverUI()
         {
-#if UNITY_EDITOR || UNITY_STANDALONE
+            if (EventSystem.current == null)
+                return false;
 
             return EventSystem.current
                 .IsPointerOverGameObject();
-
-#else
-
-            if (Input.touchCount > 0)
-            {
-                return EventSystem.current
-                    .IsPointerOverGameObject(
-                        Input.GetTouch(0).fingerId);
-            }
-
-            return false;
-
-#endif
         }
     }
-}   
+}
