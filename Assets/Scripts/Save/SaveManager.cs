@@ -12,11 +12,31 @@ namespace InspectionSystem.Save
     /// </summary>
     public class SaveManager : MonoBehaviour
     {
+        // --- ADDED FOR SINGLETON PATTERN ---
+        public static SaveManager Instance { get; private set; }
+
         // Stores save data in memory
         private SaveData saveData;
 
         // Path where save file is stored
         private string SavePath => Path.Combine(Application.persistentDataPath, "InspectionSave.json");
+
+        #region Initialization
+
+        // --- ADDED FOR SINGLETON ENFORCEMENT ---
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // Keeps save tracking alive across scene changes
+        }
+
+        #endregion
 
         #region Unity Lifecycle
 
