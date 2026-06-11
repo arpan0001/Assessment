@@ -4,9 +4,9 @@ using InspectionSystem.Core;
 
 namespace InspectionSystem.Objectives
 {
-    /// <summary>
-    /// Manages inspection objectives and tracks progress.
-    /// </summary>
+    
+    //Manages inspection objectives and tracks progress
+    
     public class ObjectiveManager : MonoBehaviour
     {
         [SerializeField]
@@ -23,7 +23,7 @@ namespace InspectionSystem.Objectives
 
         #region Unity Lifecycle
 
-        // Initialize required objectives
+        
         private void Awake()
         {
             if (objectiveData == null)
@@ -51,7 +51,7 @@ namespace InspectionSystem.Objectives
             GameEvents.ProgressLoaded -= RestoreProgress;
         }
 
-        // Update UI when game starts
+     
         private void Start()
         {
             UpdateProgress();
@@ -64,13 +64,13 @@ namespace InspectionSystem.Objectives
         // Called when an object is inspected
         private void OnObjectInspected(string objectId)
         {
-            // Ignore objects that are not required
+           
             if (!requiredObjects.Contains(objectId))
             {
                 return;
             }
 
-            // Ignore already inspected objects
+           
             if (!completedObjects.Add(objectId))
             {
                 return;
@@ -81,14 +81,14 @@ namespace InspectionSystem.Objectives
             // Save updated progress
             GameEvents.ProgressChanged?.Invoke(GetCompletedObjects());
 
-            // Update UI
+         
             UpdateProgress();
 
-            // Check if all objectives are completed
+            
             CheckCompletion();
         }
 
-        // Restore progress from save data
+       
         private void RestoreProgress(List<string> loadedObjects)
         {
             completedObjects.Clear();
@@ -146,7 +146,7 @@ namespace InspectionSystem.Objectives
             return new List<string>(completedObjects);
         }
 
-        // Reset all objective progress
+      
         public void ResetObjectives()
         {
             completedObjects.Clear();

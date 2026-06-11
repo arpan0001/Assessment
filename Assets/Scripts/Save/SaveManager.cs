@@ -6,13 +6,12 @@ using InspectionSystem.Core;
 
 namespace InspectionSystem.Save
 {
-    /// <summary>
-    /// Handles saving, loading and deleting inspection progress.
-    /// Data is stored as a JSON file.
-    /// </summary>
+    
+    // Handles saving, loading and deleting inspection progress.
+    
     public class SaveManager : MonoBehaviour
     {
-        // --- ADDED FOR SINGLETON PATTERN ---
+        // SINGLETON PATTERN 
         public static SaveManager Instance { get; private set; }
 
         // Stores save data in memory
@@ -23,7 +22,7 @@ namespace InspectionSystem.Save
 
         #region Initialization
 
-        // --- ADDED FOR SINGLETON ENFORCEMENT ---
+        // SINGLETON ENFORCEMENT 
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -33,7 +32,7 @@ namespace InspectionSystem.Save
             }
 
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Keeps save tracking alive across scene changes
+            DontDestroyOnLoad(gameObject); 
         }
 
         #endregion
@@ -74,7 +73,7 @@ namespace InspectionSystem.Save
                     CompletedObjects = new List<string>(completedObjects)
                 };
 
-                // Convert data to JSON
+                
                 string json = JsonUtility.ToJson(saveData, true);
 
                 // Write JSON to file
@@ -151,7 +150,7 @@ namespace InspectionSystem.Save
             }
         }
 
-        // Reset all progress
+       
         public void ResetProgress()
         {
             DeleteSave();
