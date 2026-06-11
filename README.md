@@ -83,6 +83,7 @@ What I did: The SaveManager is designed around a persistent Singleton Pattern, e
 Why: A single, centralized player profile tracker is required to manage game data safely across application lifecycles. It provides a clean, global access point for saving and loading without risking duplicate managers.
 
 4. Raycasting & Pointer Blocking
+
 What I did: Combined cross-platform input logic with a EventSystem.current.IsPointerOverGameObject() check before casting lines into the 3D space.
 
 Why: This prevents the notorious "click-through" bug, ensuring that if a user clicks an "Inspect" button on the UI canvas, the system doesn't accidentally raycast through the UI and select a 3D object standing behind it.
