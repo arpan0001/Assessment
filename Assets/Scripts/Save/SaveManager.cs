@@ -20,7 +20,6 @@ namespace InspectionSystem.Save
         // Path where save file is stored
         private string SavePath => Path.Combine(Application.persistentDataPath, "InspectionSave.json");
 
-        #region Initialization
 
         // SINGLETON ENFORCEMENT 
         private void Awake()
@@ -35,9 +34,6 @@ namespace InspectionSystem.Save
             DontDestroyOnLoad(gameObject); 
         }
 
-        #endregion
-
-        #region Unity Lifecycle
 
         // Subscribe to save event
         private void OnEnable()
@@ -57,10 +53,6 @@ namespace InspectionSystem.Save
             yield return null;
             LoadProgress();
         }
-
-        #endregion
-
-        #region Save / Load
 
         // Save progress to JSON file
         private void SaveProgress(List<string> completedObjects)
@@ -126,10 +118,7 @@ namespace InspectionSystem.Save
             }
         }
 
-        #endregion
-
-        #region Public Methods
-
+        
         // Delete save file and clear data
         public void DeleteSave()
         {
@@ -155,7 +144,5 @@ namespace InspectionSystem.Save
         {
             DeleteSave();
         }
-
-        #endregion
     }
 }

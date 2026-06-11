@@ -5,7 +5,7 @@ using InspectionSystem.Core;
 namespace InspectionSystem.Objectives
 {
     
-    //Manages inspection objectives and tracks progress
+    // Manages inspection objectives and tracks progress.
     
     public class ObjectiveManager : MonoBehaviour
     {
@@ -21,15 +21,11 @@ namespace InspectionSystem.Objectives
         // Prevents completion event from firing multiple times
         private bool isCompleted;
 
-        #region Unity Lifecycle
-
-        
         private void Awake()
         {
             if (objectiveData == null)
             {
                 Debug.LogError("ObjectiveData is not assigned.", this);
-
                 enabled = false;
                 return;
             }
@@ -51,26 +47,19 @@ namespace InspectionSystem.Objectives
             GameEvents.ProgressLoaded -= RestoreProgress;
         }
 
-     
         private void Start()
         {
             UpdateProgress();
         }
 
-        #endregion
-
-        #region Progress Tracking
-
         // Called when an object is inspected
         private void OnObjectInspected(string objectId)
         {
-           
             if (!requiredObjects.Contains(objectId))
             {
                 return;
             }
 
-           
             if (!completedObjects.Add(objectId))
             {
                 return;
@@ -81,14 +70,10 @@ namespace InspectionSystem.Objectives
             // Save updated progress
             GameEvents.ProgressChanged?.Invoke(GetCompletedObjects());
 
-         
             UpdateProgress();
-
-            
             CheckCompletion();
         }
 
-       
         private void RestoreProgress(List<string> loadedObjects)
         {
             completedObjects.Clear();
@@ -136,26 +121,17 @@ namespace InspectionSystem.Objectives
             GameEvents.TrainingCompleted?.Invoke();
         }
 
-        #endregion
-
-        #region Public Methods
-
         // Returns a copy of completed object IDs
         public List<string> GetCompletedObjects()
         {
             return new List<string>(completedObjects);
         }
 
-      
         public void ResetObjectives()
         {
             completedObjects.Clear();
-
             isCompleted = false;
-
             UpdateProgress();
         }
-
-        #endregion
     }
 }
