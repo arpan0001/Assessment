@@ -1,135 +1,161 @@
 using System.Collections.Generic;
 using UnityEngine;
-
 using InspectionSystem.Core;
 
 namespace InspectionSystem.Objectives
 {
+    /// <summary>
+    /// Manages inspection objectives and tracks progress.
+    /// </summary>
     public class ObjectiveManager : MonoBehaviour
     {
         [SerializeField]
         private ObjectiveData objectiveData;
 
-        private readonly HashSet<string>
-            completedObjects =
-                new HashSet<string>();
+        // Stores inspected object IDs (no duplicates allowed)
+        private readonly HashSet<string> completedObjects = new();
 
+        // Stores all required object IDs
+        private HashSet<string> requiredObjects;
+
+        // Prevents completion event from firing multiple times
+        private bool isCompleted;
+
+        #region Unity Lifecycle
+
+        // Initialize required objectives
+        private void Awake()
+        {
+            if (objectiveData == null)
+            {
+                Debug.LogError("ObjectiveData is not assigned.", this);
+
+                enabled = false;
+                return;
+            }
+
+            requiredObjects = new HashSet<string>(objectiveData.RequiredObjectIds);
+        }
+
+        // Subscribe to game events
         private void OnEnable()
         {
-            GameEvents.ObjectInspected +=
-                OnObjectInspected;
-
-            GameEvents.ProgressLoaded +=
-                RestoreProgress;
+            GameEvents.ObjectInspected += OnObjectInspected;
+            GameEvents.ProgressLoaded += RestoreProgress;
         }
 
+        // Unsubscribe from game events
         private void OnDisable()
         {
-            GameEvents.ObjectInspected -=
-                OnObjectInspected;
-
-            GameEvents.ProgressLoaded -=
-                RestoreProgress;
+            GameEvents.ObjectInspected -= OnObjectInspected;
+            GameEvents.ProgressLoaded -= RestoreProgress;
         }
 
+        // Update UI when game starts
         private void Start()
         {
             UpdateProgress();
         }
 
-        private void OnObjectInspected(
-            string objectId)
+        #endregion
+
+        #region Progress Tracking
+
+        // Called when an object is inspected
+        private void OnObjectInspected(string objectId)
         {
-            if (!objectiveData.RequiredObjectIds
-                .Contains(objectId))
+            // Ignore objects that are not required
+            if (!requiredObjects.Contains(objectId))
             {
                 return;
             }
 
-            if (completedObjects.Contains(
-                objectId))
+            // Ignore already inspected objects
+            if (!completedObjects.Add(objectId))
             {
                 return;
             }
 
-            completedObjects.Add(
-                objectId);
+            Debug.Log($"Inspected: {objectId}");
 
-            Debug.Log(
-                $"Inspected: {objectId}");
+            // Save updated progress
+            GameEvents.ProgressChanged?.Invoke(GetCompletedObjects());
 
-            // Notify SaveManager AFTER update
-            GameEvents.ProgressChanged?.Invoke(
-                GetCompletedObjects());
-
+            // Update UI
             UpdateProgress();
 
+            // Check if all objectives are completed
             CheckCompletion();
         }
 
-        private void RestoreProgress(
-            List<string> loadedObjects)
+        // Restore progress from save data
+        private void RestoreProgress(List<string> loadedObjects)
         {
             completedObjects.Clear();
 
-            foreach (string id
-                     in loadedObjects)
+            foreach (string id in loadedObjects)
             {
                 completedObjects.Add(id);
             }
 
-            Debug.Log(
-                $"Restored Count = {completedObjects.Count}");
+            Debug.Log($"Restored Count = {completedObjects.Count}");
 
             UpdateProgress();
-
             CheckCompletion();
         }
 
+        // Update progress count and notify UI
         private void UpdateProgress()
         {
-            int completed =
-                completedObjects.Count;
+            int completed = completedObjects.Count;
+            int total = requiredObjects.Count;
 
-            int total =
-                objectiveData.RequiredObjectIds.Count;
+            Debug.Log($"Progress Updated: {completed}/{total}");
 
-            Debug.Log(
-                $"Progress Updated: {completed}/{total}");
-
-            GameEvents.ObjectiveProgressUpdated
-                ?.Invoke(
-                    completed,
-                    total);
+            GameEvents.ObjectiveProgressUpdated?.Invoke(completed, total);
         }
 
+        // Check if all required objects are inspected
         private void CheckCompletion()
         {
-            if (completedObjects.Count !=
-                objectiveData.RequiredObjectIds.Count)
+            if (isCompleted)
             {
                 return;
             }
 
-            Debug.Log(
-                "Training Completed");
+            if (completedObjects.Count != requiredObjects.Count)
+            {
+                return;
+            }
 
-            GameEvents.TrainingCompleted
-                ?.Invoke();
+            isCompleted = true;
+
+            Debug.Log("Training Completed");
+
+            // Notify that training is finished
+            GameEvents.TrainingCompleted?.Invoke();
         }
 
-        public List<string>
-            GetCompletedObjects()
+        #endregion
+
+        #region Public Methods
+
+        // Returns a copy of completed object IDs
+        public List<string> GetCompletedObjects()
         {
-            return new List<string>(
-                completedObjects);
+            return new List<string>(completedObjects);
         }
 
+        // Reset all objective progress
         public void ResetObjectives()
         {
             completedObjects.Clear();
 
+            isCompleted = false;
+
             UpdateProgress();
         }
+
+        #endregion
     }
 }

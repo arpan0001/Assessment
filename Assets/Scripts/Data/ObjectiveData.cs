@@ -8,7 +8,6 @@ namespace InspectionSystem.Objectives
         menuName = "Inspection System/Objective Data")]
     public class ObjectiveData : ScriptableObject
     {
-        public List<string> RequiredObjectIds =
-            new List<string>();
+        public List<string> RequiredObjectIds = new List<string>();
     }
 }

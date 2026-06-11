@@ -10,8 +10,8 @@ namespace InspectionSystem.UI
 {
     /// <summary>
     /// Handles all UI updates.
-    /// Only listens to events and updates UI.
-    /// Contains no gameplay logic.
+    /// Listens to game events and updates UI elements.
+    /// Does not contain gameplay logic.
     /// </summary>
     public class UIManager : MonoBehaviour
     {
@@ -39,130 +39,118 @@ namespace InspectionSystem.UI
         [SerializeField]
         private ObjectiveManager objectiveManager;
 
-
-
-        // Currently selected object
+        // Currently selected inspection object
         private InspectionObjectData selectedObject;
 
+        // Subscribe to UI-related events
         private void OnEnable()
         {
             GameEvents.ObjectSelected += DisplayObjectInfo;
 
-            GameEvents.ObjectiveProgressUpdated +=
-                UpdateProgressUI;
+            GameEvents.ObjectiveProgressUpdated += UpdateProgressUI;
 
-            GameEvents.TrainingCompleted +=
-                ShowCompletionPanel;
+            GameEvents.TrainingCompleted += ShowCompletionPanel;
         }
 
+        // Unsubscribe from events
         private void OnDisable()
         {
             GameEvents.ObjectSelected -= DisplayObjectInfo;
 
-            GameEvents.ObjectiveProgressUpdated -=
-                UpdateProgressUI;
+            GameEvents.ObjectiveProgressUpdated -= UpdateProgressUI;
 
-            GameEvents.TrainingCompleted -=
-                ShowCompletionPanel;
+            GameEvents.TrainingCompleted -= ShowCompletionPanel;
         }
 
+        // Set default UI values
         private void Start()
         {
             InitializeUI();
         }
 
         /// <summary>
-        /// Sets default UI values.
+        /// Sets default text and hides completion panel.
         /// </summary>
         private void InitializeUI()
         {
             objectNameText.text = "Select Object";
 
-            descriptionText.text =
-                "Click an object to view information.";
+            descriptionText.text = "Click an object to view information.";
 
-            objectiveText.text =
-                "Current Objective";
+            objectiveText.text = "Current Objective";
 
-            progressText.text =
-                "Progress: 0 / 0";
+            progressText.text = "Progress: 0 / 0";
 
             completionPanel.SetActive(false);
         }
 
         /// <summary>
-        /// Called when an object is selected.
+        /// Updates object information when an object is selected.
         /// </summary>
-        private void DisplayObjectInfo(
-            InspectionObjectData objectData)
+        private void DisplayObjectInfo(InspectionObjectData objectData)
         {
             selectedObject = objectData;
 
-            objectNameText.text =
-                objectData.DisplayName;
+            objectNameText.text = objectData.DisplayName;
 
-            descriptionText.text =
-                objectData.Description;
+            descriptionText.text =objectData.Description;
         }
 
         /// <summary>
-        /// Called when progress changes.
+        /// Updates progress text on the UI.
         /// </summary>
-        private void UpdateProgressUI(
-            int completedObjectives,
-            int totalObjectives)
+        private void UpdateProgressUI( int completedObjectives,int totalObjectives)
         {
-            progressText.text =
-                $"Progress: {completedObjectives} / {totalObjectives}";
+            progressText.text = $"Progress: {completedObjectives} / {totalObjectives}";
         }
 
         /// <summary>
-        /// Called by the Inspect Button.
+        /// Called when the Inspect button is pressed.
+        /// Sends inspection event for selected object.
         /// </summary>
         public void OnInspectButtonPressed()
         {
+            // Prevent inspection if nothing is selected
             if (selectedObject == null)
             {
-                Debug.LogWarning(
-                    "No object selected.");
+                Debug.LogWarning("No object selected.");
 
                 return;
             }
 
-            GameEvents.ObjectInspected?.Invoke(
-                selectedObject.ObjectId);
+            // Notify system that object was inspected
+            GameEvents.ObjectInspected?.Invoke(selectedObject.ObjectId);
         }
 
         /// <summary>
-        /// Shows completion screen.
+        /// Shows completion panel when training is finished.
         /// </summary>
         private void ShowCompletionPanel()
         {
             completionPanel.SetActive(true);
-
         }
 
         /// <summary>
-        /// Optional restart button.
+        /// Reloads the current scene.
         /// </summary>
         public void RestartTraining()
         {
-            UnityEngine.SceneManagement.SceneManager
-                .LoadScene(
-                    UnityEngine.SceneManagement
-                    .SceneManager
-                    .GetActiveScene()
-                    .buildIndex);
+            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
         }
 
+        /// <summary>
+        /// Clears saved progress and resets objectives.
+        /// </summary>
         public void ResetTraining()
         {
+            // Delete saved progress
             saveManager.ResetProgress();
 
+            // Reset runtime objective progress
             objectiveManager.ResetObjectives();
 
+            // Hide completion screen
             completionPanel.SetActive(false);
         }
-    
     }
 }

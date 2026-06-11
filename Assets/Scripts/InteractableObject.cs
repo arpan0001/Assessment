@@ -27,14 +27,12 @@ namespace InspectionSystem.Interaction
         {
             if (objectData == null)
             {
-                Debug.LogWarning(
-                    $"{name} has no data assigned.");
+                Debug.LogWarning( $"{name} has no data assigned.");
 
                 return;
             }
 
-            GameEvents.ObjectSelected?.Invoke(
-                objectData);
+            GameEvents.ObjectSelected?.Invoke( objectData);
         }
     }
 }

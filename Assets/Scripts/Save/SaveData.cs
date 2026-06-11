@@ -6,7 +6,6 @@ namespace InspectionSystem.Save
     [Serializable]
     public class SaveData
     {
-        public List<string> CompletedObjects =
-            new List<string>();
+        public List<string> CompletedObjects = new List<string>();
     }
 }

@@ -4,81 +4,94 @@ using UnityEngine.InputSystem;
 
 namespace InspectionSystem.Interaction
 {
+    /// <summary>
+    /// Handles mouse and touch input.
+    /// Detects object selection using raycasts.
+    /// </summary>
     public class InputManager : MonoBehaviour
     {
         [Header("Camera")]
         [SerializeField]
         private Camera mainCamera;
 
+        // Check for input every frame
         private void Update()
         {
             HandleMouseInput();
             HandleTouchInput();
         }
 
+        /// <summary>
+        /// Detects mouse clicks.
+        /// </summary>
         private void HandleMouseInput()
         {
+            // Exit if no mouse is available
             if (Mouse.current == null)
                 return;
 
-            if (!Mouse.current.leftButton
-                .wasPressedThisFrame)
+            // Only react when left mouse button is pressed
+            if (!Mouse.current.leftButton .wasPressedThisFrame) 
                 return;
 
-            ProcessSelection(
-                Mouse.current.position.ReadValue());
+            ProcessSelection(Mouse.current.position.ReadValue());
         }
 
+        /// <summary>
+        /// Detects screen touches.
+        /// </summary>
         private void HandleTouchInput()
         {
+            // Exit if no touchscreen is available
             if (Touchscreen.current == null)
                 return;
 
-            var touch =
-                Touchscreen.current.primaryTouch;
+            var touch = Touchscreen.current.primaryTouch;
 
-            if (!touch.press
-                .wasPressedThisFrame)
+            // Only react when touch begins
+            if (!touch.press.wasPressedThisFrame)
                 return;
 
-            ProcessSelection(
-                touch.position.ReadValue());
+            ProcessSelection( touch.position.ReadValue());
         }
 
-        private void ProcessSelection(
-            Vector2 screenPosition)
+        /// <summary>
+        /// Selects an object at the given screen position.
+        /// </summary>
+        private void ProcessSelection( Vector2 screenPosition)
         {
+            // Ignore input when clicking UI
             if (IsPointerOverUI())
                 return;
 
-            Ray ray =
-                mainCamera.ScreenPointToRay(
-                    screenPosition);
+            // Create a ray from the camera
+            Ray ray = mainCamera.ScreenPointToRay(screenPosition);
 
-            if (!Physics.Raycast(
-                ray,
-                out RaycastHit hit))
+            // Check if ray hits an object
+            if (!Physics.Raycast(ray,out RaycastHit hit))
             {
                 return;
             }
 
-            InteractableObject interactable =
-                hit.collider.GetComponent<
-                    InteractableObject>();
+            // Look for an InteractableObject component
+            InteractableObject interactable = hit.collider.GetComponent<InteractableObject>();
 
             if (interactable == null)
                 return;
 
+            // Select the object
             interactable.Select();
         }
 
+        /// <summary>
+        /// Returns true if pointer is over UI.
+        /// </summary>
         private bool IsPointerOverUI()
         {
             if (EventSystem.current == null)
                 return false;
 
-            return EventSystem.current
-                .IsPointerOverGameObject();
+            return EventSystem.current.IsPointerOverGameObject();
         }
     }
 }
