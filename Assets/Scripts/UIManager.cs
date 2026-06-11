@@ -29,9 +29,6 @@ namespace InspectionSystem.UI
         [SerializeField]
         private TMP_Text progressText;
 
-        [SerializeField]
-        private TMP_Text objectiveListText;
-
         [Header("Completion UI")]
         [SerializeField]
         private GameObject completionPanel;
@@ -142,6 +139,7 @@ namespace InspectionSystem.UI
         private void ShowCompletionPanel()
         {
             completionPanel.SetActive(true);
+
         }
 
         /// <summary>

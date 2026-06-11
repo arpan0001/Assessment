@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: GlovesData
   m_EditorClassIdentifier: Assembly-CSharp::InspectionSystem.Data.InspectionObjectData
   ObjectId: gloves
-  DisplayName: Protective Gloves
+  DisplayName: ' Gloves'
   Description: Protects hands during hazardous work.
