@@ -25,6 +25,7 @@ The primary objective of the system is to guide a user through a sequential trai
 The project follows a modular architecture where each system has a single responsibility.
 
 1. Data Layer (ScriptableObjects)
+
 Instead of hardcoding values or maintaining messy configuration files, the system uses Unity’s native ScriptableObject format to drive the simulation.
 
 InspectionObjectData: Acts as the single source of truth for an inspectable item. It holds the unique string identifier (ObjectId), player-facing name, and educational descriptions.
@@ -32,6 +33,7 @@ InspectionObjectData: Acts as the single source of truth for an inspectable item
 ObjectiveData: Stores the master sequence of tasks. It holds an ordered list of ObjectId strings defining the exact order in which objects must be inspected to complete the training.
 
 2. Interaction & Input System
+
 This layer acts as the bridge between player physics and code logic. It captures hardware events and routes them into the simulated world.
 
 InputManager: Monitors mouse clicks and mobile touch inputs. It handles cross-platform input wrapping and fires a single Physics.Raycast only when an explicit click or tap is registered. Crucially, it checks the EventSystem to ensure the user isn't clicking on a UI button before passing the raycast through to the 3D scene.
@@ -39,6 +41,7 @@ InputManager: Monitors mouse clicks and mobile touch inputs. It handles cross-pl
 InteractableObject: A component attached to physical 3D prefabs (like the Helmet or Toolbox). It holds a reference to its corresponding InspectionObjectData. When hit by the InputManager's raycast, it broadcasts its data packet to the rest of the game via GameEvents.ObjectSelected.
 
 3. Core Logic & Objective Tracking (ObjectiveManager)
+
 This system acts as the state machine and rule validator for the training session.
 
 Responsibilities: It listens for the GameEvents.ObjectInspected event. When an object is inspected, it compares the incoming ObjectId against the required ID at the current index of the ObjectiveData list.
@@ -46,11 +49,13 @@ Responsibilities: It listens for the GameEvents.ObjectInspected event. When an o
 If the ID matches, it increments the progress index, commands the SaveManager to commit the save, and checks if the player has reached the end of the list. If they have, it fires GameEvents.TrainingCompleted.
 
 4. SaveManager
+
 A lightweight data handler that ensures user progress isn't lost between application restarts.
 
 Responsibilities: It utilizes a singleton pattern to persist across scenes (DontDestroyOnLoad). It serializes the player's current objective index into a utility JSON string and saves it securely via PlayerPrefs. Upon system initialization, it feeds this data back to the ObjectiveManager to seamlessly restore the state.
 
 5. UI & Presentation Layer
+
 This layer is completely passive, relying on reactive programming to update what the player sees. It contains no internal game state logic.
 
 UIManager: Listens for GameEvents.ObjectSelected to populate the text fields of the inspection panel with the selected asset's name and description. When the player clicks the physical "Inspect" button, it passes that intent forward by invoking GameEvents.ObjectInspected.
