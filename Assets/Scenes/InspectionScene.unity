@@ -233,7 +233,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 150}
+  m_AnchoredPosition: {x: 0, y: 540}
   m_SizeDelta: {x: 600, y: 250}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &35572511
@@ -323,6 +323,8 @@ MonoBehaviour:
   objectiveText: {fileID: 529870048}
   progressText: {fileID: 1804617752}
   completionPanel: {fileID: 15472545}
+  saveManager: {fileID: 2066262239}
+  objectiveManager: {fileID: 2100717325}
 --- !u!4 &204531636 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1728359837733430035, guid: 6ec27b272d043044db5db2541e1d68a1, type: 3}
@@ -1233,6 +1235,18 @@ MonoBehaviour:
       - m_Target: {fileID: 87742237}
         m_TargetAssemblyTypeName: InspectionSystem.UI.UIManager, Assembly-CSharp
         m_MethodName: RestartTraining
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 87742237}
+        m_TargetAssemblyTypeName: InspectionSystem.UI.UIManager, Assembly-CSharp
+        m_MethodName: ResetTraining
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2514,6 +2528,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2066262238}
+  - component: {fileID: 2066262239}
   m_Layer: 0
   m_Name: SaveManager
   m_TagString: Untagged
@@ -2536,6 +2551,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1438750893}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2066262239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066262237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c255b117cc4d0d743955741786738ccf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InspectionSystem.Save.SaveManager
 --- !u!1 &2100717323
 GameObject:
   m_ObjectHideFlags: 0

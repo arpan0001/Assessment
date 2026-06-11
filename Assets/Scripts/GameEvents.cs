@@ -1,25 +1,33 @@
 using System;
+using System.Collections.Generic;
 using InspectionSystem.Data;
 
 namespace InspectionSystem.Core
 {
     public static class GameEvents
     {
-        /// <summary>
-        /// Fired when player selects an object.
-        /// </summary>
-        public static Action<InspectionObjectData> ObjectSelected;
+        // Object selection
+        public static Action<InspectionObjectData>
+            ObjectSelected;
 
-        /// <summary>
-        /// Fired when inspection is completed.
-        /// </summary>
-        public static Action<string> ObjectInspected;
+        // User pressed inspect
+        public static Action<string>
+            ObjectInspected;
 
-        /// <summary>
-        /// Fired when all objectives are finished.
-        /// </summary>
-        public static Action TrainingCompleted;
+        // Progress UI update
+        public static Action<int, int>
+            ObjectiveProgressUpdated;
 
-        public static Action<int, int> ObjectiveProgressUpdated;
+        // Training completed
+        public static Action
+            TrainingCompleted;
+
+        // Save data loaded
+        public static Action<List<string>>
+            ProgressLoaded;
+
+        // Progress changed after inspection
+        public static Action<List<string>>
+            ProgressChanged;
     }
 }

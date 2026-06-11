@@ -3,6 +3,8 @@ using UnityEngine;
 
 using InspectionSystem.Core;
 using InspectionSystem.Data;
+using InspectionSystem.Objectives;
+using InspectionSystem.Save;
 
 namespace InspectionSystem.UI
 {
@@ -27,9 +29,20 @@ namespace InspectionSystem.UI
         [SerializeField]
         private TMP_Text progressText;
 
+        [SerializeField]
+        private TMP_Text objectiveListText;
+
         [Header("Completion UI")]
         [SerializeField]
         private GameObject completionPanel;
+
+        [SerializeField]
+        private SaveManager saveManager;
+
+        [SerializeField]
+        private ObjectiveManager objectiveManager;
+
+
 
         // Currently selected object
         private InspectionObjectData selectedObject;
@@ -143,5 +156,15 @@ namespace InspectionSystem.UI
                     .GetActiveScene()
                     .buildIndex);
         }
+
+        public void ResetTraining()
+        {
+            saveManager.ResetProgress();
+
+            objectiveManager.ResetObjectives();
+
+            completionPanel.SetActive(false);
+        }
+    
     }
 }

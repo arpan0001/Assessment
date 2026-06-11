@@ -5,37 +5,31 @@ using InspectionSystem.Core;
 
 namespace InspectionSystem.Objectives
 {
-    /// <summary>
-    /// Tracks inspection progress.
-    /// Objects may be inspected in any order.
-    /// </summary>
     public class ObjectiveManager : MonoBehaviour
     {
-        [Header("Objective Data")]
         [SerializeField]
         private ObjectiveData objectiveData;
 
-        // Stores completed inspections
         private readonly HashSet<string>
             completedObjects =
                 new HashSet<string>();
-
-        public int CompletedCount =>
-            completedObjects.Count;
-
-        public int TotalCount =>
-            objectiveData.RequiredObjectIds.Count;
 
         private void OnEnable()
         {
             GameEvents.ObjectInspected +=
                 OnObjectInspected;
+
+            GameEvents.ProgressLoaded +=
+                RestoreProgress;
         }
 
         private void OnDisable()
         {
             GameEvents.ObjectInspected -=
                 OnObjectInspected;
+
+            GameEvents.ProgressLoaded -=
+                RestoreProgress;
         }
 
         private void Start()
@@ -46,20 +40,15 @@ namespace InspectionSystem.Objectives
         private void OnObjectInspected(
             string objectId)
         {
-            // Ignore invalid IDs
             if (!objectiveData.RequiredObjectIds
                 .Contains(objectId))
             {
                 return;
             }
 
-            // Ignore already completed objects
             if (completedObjects.Contains(
                 objectId))
             {
-                Debug.Log(
-                    $"{objectId} already inspected.");
-
                 return;
             }
 
@@ -67,11 +56,34 @@ namespace InspectionSystem.Objectives
                 objectId);
 
             Debug.Log(
-                $"{objectId} inspection completed.");
+                $"Inspected: {objectId}");
+
+            // Notify SaveManager AFTER update
+            GameEvents.ProgressChanged?.Invoke(
+                GetCompletedObjects());
 
             UpdateProgress();
 
-            CheckTrainingCompletion();
+            CheckCompletion();
+        }
+
+        private void RestoreProgress(
+            List<string> loadedObjects)
+        {
+            completedObjects.Clear();
+
+            foreach (string id
+                     in loadedObjects)
+            {
+                completedObjects.Add(id);
+            }
+
+            Debug.Log(
+                $"Restored Count = {completedObjects.Count}");
+
+            UpdateProgress();
+
+            CheckCompletion();
         }
 
         private void UpdateProgress()
@@ -82,13 +94,16 @@ namespace InspectionSystem.Objectives
             int total =
                 objectiveData.RequiredObjectIds.Count;
 
+            Debug.Log(
+                $"Progress Updated: {completed}/{total}");
+
             GameEvents.ObjectiveProgressUpdated
                 ?.Invoke(
                     completed,
                     total);
         }
 
-        private void CheckTrainingCompletion()
+        private void CheckCompletion()
         {
             if (completedObjects.Count !=
                 objectiveData.RequiredObjectIds.Count)
@@ -103,11 +118,11 @@ namespace InspectionSystem.Objectives
                 ?.Invoke();
         }
 
-        public bool IsObjectCompleted(
-            string objectId)
+        public List<string>
+            GetCompletedObjects()
         {
-            return completedObjects.Contains(
-                objectId);
+            return new List<string>(
+                completedObjects);
         }
 
         public void ResetObjectives()
