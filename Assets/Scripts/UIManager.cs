@@ -123,12 +123,6 @@ namespace InspectionSystem.UI
             completionPanel.SetActive(true);
         }
 
-       
-        public void RestartTraining()
-        {
-            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
-        }
-
         
         public void ResetTraining()
         {
